@@ -4,173 +4,85 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <windows.h>
-#include <time.h>
+#include <ctime>
 
-const float DEG2RAD = 3.14159 / 180;
+// Define constants
+const float DEG2RAD = 3.14159f / 180.0f;
+const float MOVEMENT_STEP = 0.03f;
+const int MAX_HIT_COUNT = 10;
+const float MERGE_RADIUS_THRESHOLD = 0.1f;  // ADDED: Threshold for merging circles
 
+// Function prototypes
 void processInput(GLFWwindow* window);
+void updateScene();
+void renderScene();
+void mergeCircles();  // ADDED: New function to handle circle merging separately
 
-enum BRICKTYPE { REFLECTIVE, DESTRUCTABLE };
-enum ONOFF { ON, OFF };
+// Enums for brick behavior
+enum class BrickType { REFLECTIVE, DESTRUCTIBLE };
+enum class Status { ON, OFF };
 
-class Brick
-{
+class Brick {
 public:
-    float original_red, original_green, original_blue;
     float x, y, width;
-    BRICKTYPE brick_type;
-    ONOFF onoff;
+    BrickType type;
+    Status status;
     int hit_count;
+    float red, green, blue;
 
-    Brick(BRICKTYPE bt, float xx, float yy, float ww, float rr, float gg, float bb)
-    {
-        brick_type = bt; x = xx; y = yy, width = ww; original_red = rr, original_green = gg, original_blue = bb;
-        onoff = ON;
-        hit_count = 0;
-    };
+    Brick(BrickType t, float xx, float yy, float ww, float rr, float gg, float bb)
+        : type(t), x(xx), y(yy), width(ww), red(rr), green(gg), blue(bb), status(Status::ON), hit_count(0) {}
 
-    void drawBrick()
-    {
-        if (onoff == ON)
-        {
-            float red = original_red * (10 - hit_count) / 10.0;
-            float green = original_green * (10 - hit_count) / 10.0;
-            float blue = original_blue * (10 - hit_count) / 10.0;
+    void draw() {
+        if (status == Status::ON) {
+            glColor3f(red * (MAX_HIT_COUNT - hit_count) / MAX_HIT_COUNT,
+                green * (MAX_HIT_COUNT - hit_count) / MAX_HIT_COUNT,
+                blue * (MAX_HIT_COUNT - hit_count) / MAX_HIT_COUNT);
 
-            glColor3f(red, green, blue);
             glBegin(GL_POLYGON);
-
-            glVertex2d(x + width / 2, y + width / 2);
-            glVertex2d(x + width / 2, y - width / 2);
-            glVertex2d(x - width / 2, y - width / 2);
-            glVertex2d(x - width / 2, y + width / 2);
-
+            glVertex2f(x + width / 2, y + width / 2);
+            glVertex2f(x + width / 2, y - width / 2);
+            glVertex2f(x - width / 2, y - width / 2);
+            glVertex2f(x - width / 2, y + width / 2);
             glEnd();
         }
     }
 
-    bool isHit(float cx, float cy, float radius)
-    {
-        // Check if circle (cx, cy) with given radius hits this brick
+    bool isHit(float cx, float cy, float radius) {
         if (cx + radius < x - width / 2 || cx - radius > x + width / 2 ||
-            cy + radius < y - width / 2 || cy - radius > y + width / 2)
-        {
+            cy + radius < y - width / 2 || cy - radius > y + width / 2) {
             return false;
         }
         hit_count++;
-        if (hit_count >= 10)
-        {
-            onoff = OFF; // Disable brick if hit 10 times
+        if (hit_count >= MAX_HIT_COUNT) {
+            status = Status::OFF;
         }
         return true;
     }
 };
 
-class Circle
-{
+class Circle {
 public:
+    float x, y, radius, speed;
     float red, green, blue;
-    float radius;
-    float x;
-    float y;
-    float speed = 0.03;
-    int direction; // 1=up 2=right 3=down 4=left 5 = up right   6 = up left  7 = down right  8= down left
+    int direction;
 
-    Circle(double xx, double yy, double rr, int dir, float rad, float r, float g, float b)
-    {
-        x = xx;
-        y = yy;
-        radius = rr;
-        red = r;
-        green = g;
-        blue = b;
-        radius = rad;
-        direction = dir;
-    }
+    Circle(float xx, float yy, float rr, int dir, float spd, float r, float g, float b)
+        : x(xx), y(yy), radius(rr), speed(spd), red(r), green(g), blue(b), direction(dir) {}
 
-    void CheckCollision(Brick& brk)
-    {
-        if (brk.brick_type == REFLECTIVE)
-        {
-            if ((x > brk.x - brk.width && x <= brk.x + brk.width) && (y > brk.y - brk.width && y <= brk.y + brk.width))
-            {
-                direction = GetRandomDirection();
-                x = x + 0.03;
-                y = y + 0.04;
-            }
-        }
-        else if (brk.brick_type == DESTRUCTABLE)
-        {
-            if ((x > brk.x - brk.width && x <= brk.x + brk.width) && (y > brk.y - brk.width && y <= brk.y + brk.width))
-            {
-                if (brk.isHit(x, y, radius))
-                {
-                    // Circle hits brick, handle hit and color change
-                    red = static_cast<float>(rand()) / RAND_MAX;
-                    green = static_cast<float>(rand()) / RAND_MAX;
-                    blue = static_cast<float>(rand()) / RAND_MAX;
-                }
-            }
+    void move() {
+        switch (direction) {
+        case 1: case 5: case 6: y = std::max(y - speed, -1.0f + radius); break;  // Up
+        case 2: case 5: case 7: x = std::min(x + speed, 1.0f - radius); break;   // Right
+        case 3: case 7: case 8: y = std::min(y + speed, 1.0f - radius); break;   // Down
+        case 4: case 6: case 8: x = std::max(x - speed, -1.0f + radius); break;  // Left
+        default: direction = rand() % 8 + 1; break;
         }
     }
 
-    int GetRandomDirection()
-    {
-        return (rand() % 8) + 1;
-    }
-
-    void MoveOneStep()
-    {
-        if (direction == 1 || direction == 5 || direction == 6)  // up
-        {
-            if (y > -1 + radius)
-            {
-                y -= speed;
-            }
-            else
-            {
-                direction = GetRandomDirection();
-            }
-        }
-
-        if (direction == 2 || direction == 5 || direction == 7)  // right
-        {
-            if (x < 1 - radius)
-            {
-                x += speed;
-            }
-            else
-            {
-                direction = GetRandomDirection();
-            }
-        }
-
-        if (direction == 3 || direction == 7 || direction == 8)  // down
-        {
-            if (y < 1 - radius) {
-                y += speed;
-            }
-            else
-            {
-                direction = GetRandomDirection();
-            }
-        }
-
-        if (direction == 4 || direction == 6 || direction == 8)  // left
-        {
-            if (x > -1 + radius) {
-                x -= speed;
-            }
-            else
-            {
-                direction = GetRandomDirection();
-            }
-        }
-    }
-
-    void DrawCircle()
-    {
+    void draw() {
         glColor3f(red, green, blue);
         glBegin(GL_POLYGON);
         for (int i = 0; i < 360; i++) {
@@ -180,125 +92,99 @@ public:
         glEnd();
     }
 
-    bool isColliding(Circle& other)
-    {
-        float dx = x - other.x;
-        float dy = y - other.y;
+    bool isColliding(const Circle& other) {
+        float dx = x - other.x, dy = y - other.y;
         float distance = sqrt(dx * dx + dy * dy);
         return distance <= (radius + other.radius);
     }
 
-    void mergeWith(Circle& other)
-    {
-        // Calculate new position as midpoint
+    void mergeWith(Circle& other) {
         x = (x + other.x) / 2.0f;
         y = (y + other.y) / 2.0f;
-
-        // Calculate new radius based on combined area
         radius = sqrt(radius * radius + other.radius * other.radius);
-
-        // Randomize color for fun
         red = static_cast<float>(rand()) / RAND_MAX;
         green = static_cast<float>(rand()) / RAND_MAX;
         blue = static_cast<float>(rand()) / RAND_MAX;
     }
 };
 
+// Global variables
 std::vector<Circle> world;
-std::vector<Brick> bricks; // Vector to store bricks
-bool circleReleased = false; // Flag to track if a circle has been released
+std::vector<Brick> bricks;
+bool circleReleased = false;
 
-int main(void) {
-    srand(time(NULL));
+int main() {
+    srand(static_cast<unsigned>(time(NULL)));
 
-    if (!glfwInit()) {
-        exit(EXIT_FAILURE);
-    }
+    if (!glfwInit()) exit(EXIT_FAILURE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    GLFWwindow* window = glfwCreateWindow(480, 480, "8-2 Assignment", NULL, NULL);
+
+    GLFWwindow* window = glfwCreateWindow(480, 480, "Optimized Brick Collision", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    Brick brick(REFLECTIVE, 0.5, -0.33, 0.2, 1, 1, 0);
-    Brick brick2(DESTRUCTABLE, -0.5, 0.33, 0.2, 0, 1, 0);
-    Brick brick3(DESTRUCTABLE, -0.5, -0.33, 0.2, 0, 1, 1);
-    Brick brick4(REFLECTIVE, 0, 0, 0.2, 1, 0.5, 0.5);
-
-    bricks.push_back(brick); // Add bricks to the vector
-    bricks.push_back(brick2);
-    bricks.push_back(brick3);
-    bricks.push_back(brick4);
+    // Create bricks
+    bricks.emplace_back(BrickType::REFLECTIVE, 0.5f, -0.33f, 0.2f, 1, 1, 0);
+    bricks.emplace_back(BrickType::DESTRUCTIBLE, -0.5f, 0.33f, 0.2f, 0, 1, 0);
+    bricks.emplace_back(BrickType::DESTRUCTIBLE, -0.5f, -0.33f, 0.2f, 0, 1, 1);
+    bricks.emplace_back(BrickType::REFLECTIVE, 0, 0, 0.2f, 1, 0.5f, 0.5f);
 
     while (!glfwWindowShouldClose(window)) {
-        //Setup View
-        float ratio;
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float)height;
-        glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
-
         processInput(window);
-
-        //Movement and Collision Handling
-        for (int i = 0; i < world.size(); i++)
-        {
-            for (int j = 0; j < bricks.size(); j++)
-            {
-                world[i].CheckCollision(bricks[j]);
-            }
-
-            // Check for circle-circle collision
-            for (int k = i + 1; k < world.size(); k++)
-            {
-                if (world[i].isColliding(world[k]))
-                {
-                    world[i].mergeWith(world[k]);
-                    world.erase(world.begin() + k); // Remove the merged circle
-                    k--; // Adjust index after erase
-                }
-            }
-
-            world[i].MoveOneStep();
-            world[i].DrawCircle();
-        }
-
-        for (int j = 0; j < bricks.size(); j++)
-        {
-            bricks[j].drawBrick();
-        }
-
+        updateScene();
+        renderScene();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     glfwDestroyWindow(window);
     glfwTerminate();
-    exit(EXIT_SUCCESS);
+    return 0;
 }
 
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+// Handle input
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !circleReleased) {
+        world.emplace_back(0, 0, 0.02f, 2, MOVEMENT_STEP, rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX));
+        circleReleased = true;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
+        circleReleased = false;
+    }
+}
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !circleReleased)
-    {
-        double r, g, b;
-        r = rand() / 10000;
-        g = rand() / 10000;
-        b = rand() / 10000;
-        Circle B(0, 0, 0.02, 2, 0.05, r, g, b);
-        world.push_back(B);
-        circleReleased = true; // Set flag to true after releasing one circle
+// Update scene logic
+void updateScene() {
+    for (auto& circle : world) {
+        for (auto& brick : bricks) if (brick.isHit(circle.x, circle.y, circle.radius)) circle.direction = rand() % 8 + 1;
     }
-    else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
-    {
-        circleReleased = false; // Reset flag when spacebar is released
+    mergeCircles();  // ADDED: Call function to merge overlapping circles
+    for (auto& circle : world) circle.move();
+}
+
+// ADDED: Separate function to handle merging logic
+void mergeCircles() {
+    for (size_t i = 0; i < world.size(); ++i) {
+        for (size_t j = i + 1; j < world.size(); ++j) {
+            if (world[i].isColliding(world[j])) {
+                world[i].mergeWith(world[j]);
+                world.erase(world.begin() + j);
+                --j;
+            }
+        }
     }
+}
+
+// Render objects
+void renderScene() {
+    for (auto& circle : world) circle.draw();
+    for (auto& brick : bricks) brick.draw();
 }
