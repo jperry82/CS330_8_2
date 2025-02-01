@@ -1,0 +1,51 @@
+﻿  MainCode.cpp
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Utilities\linmath.h(64,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Source/MainCode.cpp')
+  
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Utilities\linmath.h(65,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Source/MainCode.cpp')
+  
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Utilities\linmath.h(66,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Source/MainCode.cpp')
+  
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Utilities\linmath.h(344,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Source/MainCode.cpp')
+  
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Utilities\linmath.h(597,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Source/MainCode.cpp')
+  
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Utilities\linmath.h(604,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Source/MainCode.cpp')
+  
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+  (compiling source file 'Source/MainCode.cpp')
+  C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Libraries\GLFW\include\GLFW\glfw3.h(123,1):
+  see previous definition of 'APIENTRY'
+  
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(10,31): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(37,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(38,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(39,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(77,19): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(82,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(83,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(84,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(99,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(100,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(212,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(227,41): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(227,35): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(228,44): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(228,38): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(229,45): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(229,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(230,36): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(249,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(251,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(257,35): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(271,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(296,45): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(296,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(296,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Source\MainCode.cpp(296,33): warning C4305: 'argument': truncation from 'double' to 'float'
+  8-2_Assignment.vcxproj -> C:\Users\jperr\Desktop\CS-330\CS330Content\CS330Content\Projects\8-2_Assignment\Debug\8-2_Assignment.exe
